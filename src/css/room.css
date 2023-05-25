@@ -1,0 +1,93 @@
+.room-container{
+    height: 599px;
+    width: 500px;
+
+    position: fixed;
+    width: 100%;
+    top: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    font-family: sans-serif;
+
+    
+}
+
+.input-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 200px;
+
+    padding: 5px;
+border-radius: 10px;
+    width: auto;
+    background-color: rgb(50, 53, 58);
+    box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.308);
+}
+
+.input-wrapper ul{
+  padding: 20px 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+gap: 10px;
+margin-top: -10px;
+
+}
+
+.input-wrapper button{
+
+    height: 30px;
+    background-color: rgb(39, 38, 44);
+border: 1px solid white;
+cursor: pointer;
+color: white;
+   border-radius: 5px;
+}
+
+.input-wrapper button:hover{
+    transition: .5s ease;
+background-color: white;
+color: black;
+border: 1px solid black;
+
+}
+.input-wrapper input{
+    padding: 8px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    background-color:  rgb(39, 38, 44);
+    
+}
+
+.logo img{
+width: 70px;
+}
+
+.logo{
+    margin-bottom: 8px;
+}
+
+.input-wrapper button:active{
+   transform: translateY(1px);
+}
+
+.gen-button{
+    width: 245px;
+}
+
+.code-label{
+    font-size: 14px;
+}
+
+.create-button{
+    width: 120px;
+}
