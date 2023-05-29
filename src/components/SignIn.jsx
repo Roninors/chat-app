@@ -25,7 +25,7 @@ export function SignIn() {
           alt="fire-logo"
         />
 
-        <p>Connect with flame talkcv now!</p>
+        <p>Connect with flame talk now!</p>
 
         <button onClick={signIn}>
           <img

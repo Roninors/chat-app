@@ -5,22 +5,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
 }
 body {
   overflow: hidden;
 }
-.infosec {
-  width: 250px;
-  height: 500px;
- border-radius: 20px;
-  background-color: rgb(50, 53, 58);
-  margin-top: 20px;
-  margin-bottom: 20px;
 
-
-  padding: 15px;
-}
 
 .message-container {
   width: 100%;
@@ -34,8 +23,8 @@ body {
   width: 700px;
   height: 500px;
   margin: 20px;
- 
- border-radius: 20px;
+
+  border-radius: 20px;
   background-color: rgb(50, 53, 58);
   position: relative;
   padding: 15px;
@@ -78,92 +67,168 @@ body {
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
- 
   background: #555555;
 }
 
-.text-area{
+.text-area {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: row;
   position: sticky;
-  
-  
+
   bottom: 35px;
-  
 }
-.text-area img{
+.text-area img {
   margin-left: -34px;
   width: 40px;
   cursor: pointer;
 }
 
-.text-area img:hover{
-  transition: .5s ease;
-transform: scale(1.2);
+.text-area img:hover {
+  transition: 0.5s ease;
+  transform: scale(1.2);
 }
 
-.text-area img:active{
-transform: scale(1);
+.text-area img:active {
+  transform: scale(1);
 }
-.text-container{
+.text-container {
   background-color: #d84b13;
   font-family: sans-serif;
   font-size: 14px;
- width: fit-content;
-  height: auto ;
+  width: fit-content;
+  height: auto;
   padding: 10px;
   border-radius: 8px;
   word-wrap: break-word;
 
   max-width: 500px;
-  color:rgb(243, 230, 230);
-
+  color: rgb(243, 230, 230);
 }
-.chat-info{
+.chat-info {
   display: flex;
   align-items: end;
   justify-content: left;
   flex-direction: row;
 
   margin-top: 14px;
-  
 }
 
-.chat-info img{
+.chat-info img {
   width: 40px;
   margin-left: 0px;
   margin-right: 8px;
   border-radius: 50%;
-
-
 }
 
-
-.chat-info span{
+.chat-info span {
   display: flex;
   align-items: left;
   justify-content: left;
   flex-direction: column;
   cursor: default;
-
-  
 }
 
-.chat-info span p{
+.chat-info span p {
   margin-top: 0px;
   margin-bottom: 5px;
   color: rgb(255, 255, 255);
   font-family: sans-serif;
   font-size: 10px;
+}
+
+#my-tooltip {
+  font-family: sans-serif;
+  font-size: 10px;
+}
+
+.infosec {
+  width: 250px;
+  height: 500px;
+  border-radius: 20px;
+  background-color: rgb(50, 53, 58);
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  padding: 15px;
+}
+.room-name-container{
+  width: 100%;
+  height: 100px;
+ padding: 0px;
+ margin: 0px;
+ border-bottom: 1px solid rgba(236, 231, 231, 0.589);
+
+
+}
+.room-name-container h1{
+  padding: 0;
+  margin: 0px;
+  font-size: 12px;
+  font-family: sans-serif;
+  color: white;
+  font-weight: 200;
+}
+.label-container{
+  height: auto;
+  width: fit-content;
+  padding: 5px;
+  background-color: #d84b13;
+  border-radius: 5px;
+  display: flex;
+  justify-content: left;
+  
 
 }
 
-#my-tooltip{
-font-family: sans-serif;
-font-size: 10px;
+.room-members{
+  width: 100%;
+  height: 200px;
+display: flex;
+align-items: start;
+justify-content: left;
 
   
 }
 
+.room-name h2{
+  font-family: sans-serif;
+  color: white;
+ 
+
+}
+
+.room-name{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  margin-top: 0px;
+height: 75px;
+
+  overflow-y: scroll;
+word-wrap: break-word;
+
+}
+
+.member-label {
+  height: 20px;
+  width: 60px;
+  background-color: #d84b13;
+border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  
+  margin-top: 13px;
+}
+
+.member-label h3{
+  color: white;
+  font-size: 12px;
+  font-family: sans-serif;
+  font-weight: 200;
+}

@@ -5,11 +5,11 @@ import { db } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
 import { appContext } from "../App";
 export function Room() {
+
   const [createRoom, setCreateRoom] = useState(true);
   const [generatedCode, setGeneratedCode] = useState("");
   const enteredRoom = useRef();
   const { userInfo } = useContext(appContext);
-
   const roomInput = useRef();
   const roomRef = collection(db, "rooms");
   const navigate = useNavigate();
@@ -29,15 +29,19 @@ export function Room() {
   };
 
   const handleJoinRoom = () => {
-    localStorage.setItem("joinedCode", JSON.stringify(enteredRoom.current.value));
-
+    if(enteredRoom.current.value == "" ||   /^\s*$/.test(enteredRoom.current.value)){
+      alert("Invalid room");
+    }else{
+      localStorage.setItem("joinedCode", JSON.stringify(enteredRoom.current.value));
     navigate("/chatPage");
+    }
+    
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (roomInput.current.value == "") {
+    if (roomInput.current.value == "" ||   /^\s*$/.test(roomInput.current.value)) {
       alert("Enter Room name");
     } else {
       await addDoc(roomRef, {
@@ -78,7 +82,7 @@ export function Room() {
           </ul>
           <ul>or</ul>
           <ul>
-            <input type="text" placeholder="Enter Room" ref={enteredRoom} />
+            <input type="text" placeholder="Room code" ref={enteredRoom} />
 
             <button onClick={handleJoinRoom}>Enter</button>
           </ul>

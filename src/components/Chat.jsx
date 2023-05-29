@@ -13,12 +13,12 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase-config";
 import { Tooltip } from "react-tooltip";
-import ReactScrollableFeed from "react-scrollable-feed"
+import ReactScrollableFeed from "react-scrollable-feed";
 
 export function Chat() {
   const inlineStyles = {
     justifyContent: "right",
-    marginRight: "9px",
+    marginRight: "0px",
     flexDirection: "row-reverse",
   };
   const inlineSpanStyles = {
@@ -29,11 +29,13 @@ export function Chat() {
   };
 
   const messageCol = collection(db, "messages");
+  const roomCol = collection(db,"rooms");
   const { userInfo } = useContext(appContext);
   const [inputText, setInputText] = useState("");
   const joinedCode = JSON.parse(localStorage.getItem("joinedCode"));
   const messageRef = useRef();
   const [messages, setMessages] = useState([]);
+  const [chosenRoom,setChosenRoom] = useState([]);
 
   useEffect(() => {
     const queryMessages = query(
@@ -47,14 +49,34 @@ export function Chat() {
       snapshot.forEach((doc) => {
         messages.push({ ...doc.data(), id: doc.id });
       });
-      console.log("get")
+      console.log("get");
       setMessages(messages);
     });
 
     return () => unsuscribe();
   }, []);
+  
+  useEffect(()=>{
+    const queryRooms = query(
+      roomCol,
+      where("roomCode", "==", joinedCode)
+    );
+
+    const unsuscribe = onSnapshot(queryRooms, (snapshot) => {
+      let room = [];
+      snapshot.forEach((doc) => {
+        room.push({ ...doc.data(), id: doc.id });
+      });
+      
+      setChosenRoom(room);
+    });
+
+    return () => unsuscribe();
+
+  },[])
 
   
+
   const handleEnter = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -91,57 +113,52 @@ export function Chat() {
       <div className="chat-container">
         <div className="message-container">
           <ReactScrollableFeed>
-
-          {messages.map((message) => (
-            <div
-              style={
-                userInfo.displayName === message.sender
-                  ? inlineStyles
-                  : undefined
-              }
-              className="chat-info"
-              key={message.id}
-            >
-              <img
+            {messages.map((message) => (
+              <div
                 style={
                   userInfo.displayName === message.sender
-                    ? inlineImgStyle
+                    ? inlineStyles
                     : undefined
                 }
-                src={new URL(message.photoUrl, import.meta.url)}
-                alt="fire-logo"
-              />
-
-              <span
-                style={
-                  userInfo.displayName === message.sender
-                    ? inlineSpanStyles
-                    : undefined
-                }
+                className="chat-info"
+                key={message.id}
               >
-                <p>
-                  {userInfo.displayName === message.sender
-                    ? "Me"
-                    : message.sender}
-                </p>
-                <div
-                  
-                  data-tooltip-id="my-tooltip"
-                  data-tooltip-content={message.timeSent
-                    ?.toDate()
-                    .toLocaleString()}
-                  className="text-container"
-                >
-                  {message.text}
-                  <Tooltip id="my-tooltip" />
-                </div>
-              </span>
-            </div>
-          ))}
+                <img
+                  style={
+                    userInfo.displayName === message.sender
+                      ? inlineImgStyle
+                      : undefined
+                  }
+                  src={new URL(message.photoUrl, import.meta.url)}
+                  alt="fire-logo"
+                />
 
+                <span
+                  style={
+                    userInfo.displayName === message.sender
+                      ? inlineSpanStyles
+                      : undefined
+                  }
+                >
+                  <p>
+                    {userInfo.displayName === message.sender
+                      ? "Me"
+                      : message.sender}
+                  </p>
+                  <div
+                    data-tooltip-id="my-tooltip"
+                    data-tooltip-content={message.timeSent
+                      ?.toDate()
+                      .toLocaleString()}
+                    className="text-container"
+                  >
+                    {message.text}
+                    <Tooltip id="my-tooltip" />
+                  </div>
+                </span>
+              </div>
+            ))}
           </ReactScrollableFeed>
-          
-      
         </div>
 
         <div className="text-area">
@@ -160,7 +177,29 @@ export function Chat() {
           />
         </div>
       </div>
-      <div className="infosec"></div>
+
+      <div className="infosec">
+        <section>
+          <div className="room-name-container">
+            <div className="label-container">
+              <h1>Room Name</h1>
+            </div>
+            <div className="room-name" >
+            {chosenRoom.map((room)=>(
+                <h2 key={1}> { room.roomName }</h2> 
+              ))}
+            </div>
+            
+          </div>
+        </section>
+        <section>
+          <div className="room-members">
+            <div className="member-label">
+              <h3>Members</h3>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
