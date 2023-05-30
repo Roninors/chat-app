@@ -29,52 +29,59 @@ export function Chat() {
   };
 
   const messageCol = collection(db, "messages");
-  const roomCol = collection(db,"rooms");
+  const roomCol = collection(db, "rooms");
+  const memberCol = collection(db,"roomMembers");
   const { userInfo } = useContext(appContext);
   const [inputText, setInputText] = useState("");
   const joinedCode = JSON.parse(localStorage.getItem("joinedCode"));
   const messageRef = useRef();
   const [messages, setMessages] = useState([]);
-  const [chosenRoom,setChosenRoom] = useState([]);
-
+  const [chosenRoom, setChosenRoom] = useState([]);
+const [roomMember, setRoomMember] = useState([]);
   useEffect(() => {
     const queryMessages = query(
       messageCol,
       where("roomCode", "==", joinedCode),
       orderBy("timeSent")
     );
+  
+    const queryRooms = query(roomCol, where("roomCode", "==", joinedCode));
+    const queryRoomMembers = query(memberCol, where("roomCode", "==", joinedCode),
+    orderBy("timeJoined"));
 
-    const unsuscribe = onSnapshot(queryMessages, (snapshot) => {
+    const unsubscribeMessages = onSnapshot(queryMessages, (snapshot) => {
       let messages = [];
       snapshot.forEach((doc) => {
         messages.push({ ...doc.data(), id: doc.id });
       });
-      console.log("get");
+      console.log("get messages");
       setMessages(messages);
     });
-
-    return () => unsuscribe();
-  }, []);
   
-  useEffect(()=>{
-    const queryRooms = query(
-      roomCol,
-      where("roomCode", "==", joinedCode)
-    );
-
-    const unsuscribe = onSnapshot(queryRooms, (snapshot) => {
-      let room = [];
+    const unsubscribeRooms = onSnapshot(queryRooms, (snapshot) => {
+      let rooms = [];
       snapshot.forEach((doc) => {
-        room.push({ ...doc.data(), id: doc.id });
+        rooms.push({ ...doc.data(), id: doc.id });
       });
-      
-      setChosenRoom(room);
+      console.log("get rooms");
+      setChosenRoom(rooms);
     });
 
-    return () => unsuscribe();
-
-  },[])
-
+    const unsubscribeMembers = onSnapshot(queryRoomMembers, (snapshot) =>{
+      let members = []
+      snapshot.forEach((doc) => {
+        members.push({ ...doc.data(), id: doc.id });
+      });
+      console.log("get members");
+      setRoomMember(members);
+    })
+  
+    return () => {
+      unsubscribeMembers();
+      unsubscribeMessages();
+      unsubscribeRooms();
+    };
+  }, []);
   
 
   const handleEnter = (e) => {
@@ -184,12 +191,11 @@ export function Chat() {
             <div className="label-container">
               <h1>Room Name</h1>
             </div>
-            <div className="room-name" >
-            {chosenRoom.map((room)=>(
-                <h2 key={1}> { room.roomName }</h2> 
+            <div className="room-name">
+              {chosenRoom.map((room) => (
+                <h2 key={1}> {room.roomName}</h2>
               ))}
             </div>
-            
           </div>
         </section>
         <section>
