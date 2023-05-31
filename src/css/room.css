@@ -53,8 +53,8 @@ color: white;
 
 .input-wrapper button:hover{
     transition: .5s ease;
-background-color: white;
-color: black;
+    background-color: #d84b13;
+color: white;
 border: 1px solid black;
 
 }
