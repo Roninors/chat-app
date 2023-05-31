@@ -61,6 +61,7 @@ export function Room() {
       memberName: userInfo.displayName,
       roomCode: code,
       timeJoined:  serverTimestamp(),
+      photoURL: userInfo.photoURL,
     })
   }
 

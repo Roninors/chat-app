@@ -73,6 +73,7 @@ const [roomMember, setRoomMember] = useState([]);
         members.push({ ...doc.data(), id: doc.id });
       });
       console.log("get members");
+    
       setRoomMember(members);
     })
   
@@ -114,7 +115,7 @@ const [roomMember, setRoomMember] = useState([]);
       }
     }
   };
-
+  console.log(roomMember)
   return (
     <div className="main-container">
       <div className="chat-container">
@@ -203,7 +204,30 @@ const [roomMember, setRoomMember] = useState([]);
             <div className="member-label">
               <h3>Members</h3>
             </div>
+
+           
+
           </div>
+          
+        </section>
+
+        <section>
+        <div className="member-section">
+        {roomMember.map((member) => (
+              <div className="member">
+              <img
+                 src={new URL(member.photoURL, import.meta.url)}
+                 alt="fire-logo"
+               />
+               <p>{member.memberName}</p>
+              </div>
+              ))}
+         
+         
+         
+            </div>
+
+            
         </section>
       </div>
     </div>
