@@ -3,7 +3,9 @@ import { collection, addDoc, serverTimestamp, query, where, onSnapshot } from "f
 import { useState, useRef, useContext, useEffect } from "react";
 import { db } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
+import {CopyToClipboard} from "react-copy-to-clipboard"
 import { appContext } from "../App";
+
 export function Room() {
 
   const [createRoom, setCreateRoom] = useState(true);
@@ -150,13 +152,28 @@ export function Room() {
               alt="fire-logo"
             />
           </ul>
+          
           <form onSubmit={handleSubmit}>
             <ul>
               <input type="text" placeholder="Room Name" ref={roomInput} />
             </ul>
-
-            <ul className="code-label">Room Code: {generatedCode}</ul>
+          <span className="roomcode-span">
+          <ul className="code-label">Room Code: {generatedCode} 
+          <CopyToClipboard text={generatedCode}>
+          <img
+              src={new URL("../pictures/copy.png", import.meta.url)}
+              alt="fire-logo"
+            />
+          </CopyToClipboard>
+           </ul>
+          </span>
+            
             <ul>
+            
+
+              <button className="create-button" type="submit">
+                Create
+              </button>
               <button
                 className="create-button"
                 onClick={() => {
@@ -165,10 +182,6 @@ export function Room() {
                 }}
               >
                 Cancel
-              </button>
-
-              <button className="create-button" type="submit">
-                Create
               </button>
             </ul>
           </form>

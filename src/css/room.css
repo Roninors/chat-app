@@ -91,3 +91,23 @@ width: 70px;
 .create-button{
     width: 120px;
 }
+
+.roomcode-span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.roomcode-span img{
+    width: 15px;  
+    cursor: pointer;
+}
+
+.roomcode-span img:hover{
+    transition: .5s ease;
+   transform: scale(1.1)
+
+}.roomcode-span img:active{
+    transform: scale(.8)
+ }

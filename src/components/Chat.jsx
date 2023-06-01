@@ -172,7 +172,7 @@ const [roomMember, setRoomMember] = useState([]);
         <div className="text-area">
           <textarea
             name="chat"
-            rows="1"
+            rows={1}
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={handleEnter}
@@ -185,6 +185,7 @@ const [roomMember, setRoomMember] = useState([]);
           />
         </div>
       </div>
+    
 
       <div className="infosec">
         <section>
