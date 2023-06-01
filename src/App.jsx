@@ -12,21 +12,22 @@ import {
 import { Chat } from "./components/Chat";
 export const appContext = createContext();
 function App() {
-  const cookies = new Cookies();
+  const cookies = new Cookies();  
 
   const [currentUser, setCurrentUser] = useState({});
+  const [isIn, setIsIn] = useState(JSON.parse(localStorage.getItem("inRoom")));
   const [isAuth, setAuth] = useState(cookies.get("auth-token"));
   
   const userInfo = JSON.parse(localStorage.getItem('user'));
   return (
     <>
-      <appContext.Provider value={{ isAuth, currentUser, setCurrentUser , userInfo}}>
+      <appContext.Provider value={{ isAuth, currentUser, setCurrentUser , userInfo,setIsIn}}>
         <Router>
           <NavBar />
           <Routes>
             {!isAuth && <Route path="/" exact element={<SignIn />} />}
             {isAuth && <Route path="/" exact element={<Room />} />}
-            {isAuth && <Route path="/chatPage" exact element={<Chat />} />}
+            {isAuth && isIn && <Route path="/chatPage" exact element={<Chat />} />}
             <Route
               path="/chatPage"
               exact

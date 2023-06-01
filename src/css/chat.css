@@ -150,7 +150,6 @@ body {
   background-color: rgb(50, 53, 58);
   margin-top: 20px;
   margin-bottom: 20px;
-
   padding: 15px;
 }
 .room-name-container{
@@ -169,6 +168,7 @@ body {
   font-family: sans-serif;
   color: white;
   font-weight: 200;
+  
 }
 .label-container{
   height: auto;
@@ -195,7 +195,12 @@ flex-direction: column;
 .room-name h2{
   font-family: sans-serif;
   color: white;
- 
+ cursor: pointer;
+margin-bottom: 0;
+margin-left: 0;
+margin-right: 0;
+
+ margin-top: 20px;
 
 }
 
@@ -207,7 +212,7 @@ flex-direction: column;
   margin-top: 0px;
 height: 75px;
 
-  overflow-y: scroll;
+  overflow-y: hidden;
 word-wrap: break-word;
 
 }
@@ -268,3 +273,7 @@ background-color: rgba(124, 123, 123, 0.521);
   background-color: #d84b13;
 }
 
+#roomcode-tooltip{
+  font-size: 11px;
+  margin-top: 25px;
+}

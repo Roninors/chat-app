@@ -23,6 +23,7 @@ export function NavBar() {
             cookies.remove("auth-token");
             localStorage.removeItem('user');
             localStorage.removeItem('joinedCode');
+            localStorage.removeItem('inRoom');
             window.location.reload();
         }}
             src={new URL("../pictures/out.png", import.meta.url)}

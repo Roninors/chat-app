@@ -11,7 +11,7 @@ export function Room() {
   const [createRoom, setCreateRoom] = useState(true);
   const [generatedCode, setGeneratedCode] = useState("");
   const enteredRoom = useRef();
-  const { userInfo } = useContext(appContext);
+  const { userInfo, setIsIn } = useContext(appContext);
   const roomInput = useRef();
   const [docExists, setDocExists] = useState(false);
   const roomRef = collection(db, "rooms");
@@ -72,6 +72,8 @@ export function Room() {
       alert("Invalid room");
     }else{
       localStorage.setItem("joinedCode", JSON.stringify(enteredRoom.current.value));
+      localStorage.setItem("inRoom", JSON.stringify(true));
+      setIsIn( JSON.parse(localStorage.getItem("inRoom")));
       if(docExists == true){
         console.log("user not found");
         await addMember(enteredRoom.current.value);
@@ -104,7 +106,8 @@ export function Room() {
      
       await addMember(generatedCode);
       localStorage.setItem("joinedCode", JSON.stringify(generatedCode));
-
+      localStorage.setItem("inRoom", JSON.stringify(true));
+      setIsIn( JSON.parse(localStorage.getItem("inRoom")));
       navigate("/chatPage");
     }
 

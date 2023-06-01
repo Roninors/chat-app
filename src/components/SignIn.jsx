@@ -11,6 +11,7 @@ export function SignIn() {
       const result = await signInWithPopup(auth, provider);
       cookies.set("auth-token", result.user.refreshToken);
       localStorage.setItem("user", JSON.stringify(result.user));
+      localStorage.setItem("inRoom", JSON.stringify(false));
       window.location.reload();
       
     } catch (err) {

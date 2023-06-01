@@ -14,7 +14,7 @@ import {
 import { db } from "../firebase-config";
 import { Tooltip } from "react-tooltip";
 import ReactScrollableFeed from "react-scrollable-feed";
-
+import {CopyToClipboard} from "react-copy-to-clipboard"
 export function Chat() {
   const inlineStyles = {
     justifyContent: "right",
@@ -192,12 +192,20 @@ const [roomMember, setRoomMember] = useState([]);
           <div className="room-name-container">
             <div className="label-container">
               <h1>Room Name</h1>
+              
             </div>
-            <div className="room-name">
+                      <CopyToClipboard text={joinedCode}>
+                      <div className="room-name"   data-tooltip-id="roomcode-tooltip"
+                    data-tooltip-content={joinedCode}>
+                      
               {chosenRoom.map((room) => (
-                <h2 key={1}> {room.roomName}</h2>
+                <h2 key={1}> {room.roomName}  <Tooltip id="roomcode-tooltip" /></h2>
+                
               ))}
+      
             </div>
+                      </CopyToClipboard>
+          
           </div>
         </section>
         <section>
