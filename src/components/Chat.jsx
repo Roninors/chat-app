@@ -14,8 +14,8 @@ import {
 import { db } from "../firebase-config";
 import { Tooltip } from "react-tooltip";
 import ReactScrollableFeed from "react-scrollable-feed";
-import {CopyToClipboard} from "react-copy-to-clipboard"
-import  { UserContext } from "../context/UserContext";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { UserContext } from "../context/UserContext";
 
 export function Chat() {
   const inlineStyles = {
@@ -32,15 +32,14 @@ export function Chat() {
 
   const messageCol = collection(db, "messages");
   const roomCol = collection(db, "rooms");
-  const memberCol = collection(db,"roomMembers");
-  const { userInfo,setIsIn } = useContext(UserContext);
+  const memberCol = collection(db, "roomMembers");
+  const { userInfo, setIsIn } = useContext(UserContext);
   const [inputText, setInputText] = useState("");
   const joinedCode = JSON.parse(localStorage.getItem("joinedCode"));
   const messageRef = useRef();
   const [messages, setMessages] = useState([]);
   const [chosenRoom, setChosenRoom] = useState([]);
   const [roomMember, setRoomMember] = useState([]);
-   
 
   useEffect(() => {
     const queryMessages = query(
@@ -48,10 +47,13 @@ export function Chat() {
       where("roomCode", "==", joinedCode),
       orderBy("timeSent")
     );
-  
+
     const queryRooms = query(roomCol, where("roomCode", "==", joinedCode));
-    const queryRoomMembers = query(memberCol, where("roomCode", "==", joinedCode),
-    orderBy("timeJoined"));
+    const queryRoomMembers = query(
+      memberCol,
+      where("roomCode", "==", joinedCode),
+      orderBy("timeJoined")
+    );
 
     const unsubscribeMessages = onSnapshot(queryMessages, (snapshot) => {
       let messages = [];
@@ -61,7 +63,7 @@ export function Chat() {
       console.log("get messages");
       setMessages(messages);
     });
-  
+
     const unsubscribeRooms = onSnapshot(queryRooms, (snapshot) => {
       let rooms = [];
       snapshot.forEach((doc) => {
@@ -71,23 +73,22 @@ export function Chat() {
       setChosenRoom(rooms);
     });
 
-    const unsubscribeMembers = onSnapshot(queryRoomMembers, (snapshot) =>{
-      let members = []
+    const unsubscribeMembers = onSnapshot(queryRoomMembers, (snapshot) => {
+      let members = [];
       snapshot.forEach((doc) => {
         members.push({ ...doc.data(), id: doc.id });
       });
       console.log("get members");
-    
+
       setRoomMember(members);
-    })
-  
+    });
+
     return () => {
       unsubscribeMembers();
       unsubscribeMessages();
       unsubscribeRooms();
     };
   }, []);
-  
 
   const handleEnter = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -119,13 +120,23 @@ export function Chat() {
       }
     }
   };
-  console.log(roomMember)
+  console.log(roomMember);
   return (
     <div className="main-container">
       <div className="chat-container">
         <div className="message-container">
           <ReactScrollableFeed>
+
+            <div className="convo-start-label">
+              <img
+                src={new URL("../pictures/fire-logo.png", import.meta.url)}
+                alt="fire-logo"
+              />
+              <h1>Conversation starts here</h1>
+            </div>
+
             {messages.map((message) => (
+
               <div
                 style={
                   userInfo.displayName === message.sender
@@ -189,27 +200,27 @@ export function Chat() {
           />
         </div>
       </div>
-    
 
       <div className="infosec">
         <section>
           <div className="room-name-container">
             <div className="label-container">
               <h1>Room Name</h1>
-              
             </div>
-                      <CopyToClipboard text={joinedCode}>
-                      <div className="room-name"   data-tooltip-id="roomcode-tooltip"
-                    data-tooltip-content={joinedCode}>
-                      
-              {chosenRoom.map((room) => (
-                <h2 key={Math.random()}> {room.roomName}  <Tooltip id="roomcode-tooltip" /></h2>
-                
-              ))}
-      
-            </div>
-                      </CopyToClipboard>
-          
+            <CopyToClipboard text={joinedCode}>
+              <div
+                className="room-name"
+                data-tooltip-id="roomcode-tooltip"
+                data-tooltip-content={joinedCode}
+              >
+                {chosenRoom.map((room) => (
+                  <h2 key={Math.random()}>
+                    {" "}
+                    {room.roomName} <Tooltip id="roomcode-tooltip" />
+                  </h2>
+                ))}
+              </div>
+            </CopyToClipboard>
           </div>
         </section>
         <section>
@@ -217,30 +228,21 @@ export function Chat() {
             <div className="member-label">
               <h3>Members</h3>
             </div>
-
-           
-
           </div>
-          
         </section>
 
         <section>
-        <div className="member-section">
-        {roomMember.map((member) => (
-              <div className="member" key = {Math.random()}>
-              <img
-                 src={new URL(member.photoURL, import.meta.url)}
-                 alt="fire-logo"
-               />
-               <p>{member.memberName}</p>
+          <div className="member-section">
+            {roomMember.map((member) => (
+              <div className="member" key={Math.random()}>
+                <img
+                  src={new URL(member.photoURL, import.meta.url)}
+                  alt="fire-logo"
+                />
+                <p>{member.memberName}</p>
               </div>
-              ))}
-         
-         
-         
-            </div>
-
-            
+            ))}
+          </div>
         </section>
       </div>
     </div>

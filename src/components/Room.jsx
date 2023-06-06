@@ -15,18 +15,18 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { UserContext } from "../context/UserContext";
 
 export function Room() {
-
   const [createRoom, setCreateRoom] = useState(true);
   const [generatedCode, setGeneratedCode] = useState("");
-  const enteredRoom = useRef();
-  const { userInfo, setIsIn,isIn } = useContext(UserContext);
-  const roomInput = useRef();
   const [docExists, setDocExists] = useState(false);
+  const [roomExists, setRoomExists] = useState(false);
+  const [fieldValue, setFieldValue] = useState("");
+  const [submitting, setIsSubmitting] = useState(false);
+  const roomInput = useRef();
+  const enteredRoom = useRef();
+  const navigate = useNavigate();
+  const { userInfo, setIsIn } = useContext(UserContext);
   const roomRef = collection(db, "rooms");
   const memberCol = collection(db, "roomMembers");
-  const [fieldValue, setFieldValue] = useState("");
-  const navigate = useNavigate();
-
 
   useEffect(() => {
     const queryMembers = query(
@@ -34,22 +34,43 @@ export function Room() {
       where("memberName", "==", userInfo.displayName),
       where("roomCode", "==", enteredRoom.current.value)
     );
-    const unsubscribeQuery = onSnapshot(queryMembers, (snapshot) => {
+
+    const queryRoom = query(
+      roomRef,
+      where("roomCode", "==", enteredRoom.current.value)
+    );
+
+    const unsubscribeRoomQuery = onSnapshot(queryRoom, (snapshot) => {
       snapshot.forEach((doc) => {
         console.log({ ...doc.data(), id: doc.id });
       });
 
       if (snapshot.empty) {
-        console.log("empty");
+        console.log("empty room");
+        setRoomExists(false);
+      } else {
+        console.log("not empty room");
+        setRoomExists(true);
+      }
+    });
+
+    const unsubscribeMemberQuery = onSnapshot(queryMembers, (snapshot) => {
+      snapshot.forEach((doc) => {
+        console.log({ ...doc.data(), id: doc.id });
+      });
+
+      if (snapshot.empty) {
+        console.log("empty members");
         setDocExists(true);
       } else {
-        console.log("not empty");
+        console.log("not empty members");
         setDocExists(false);
       }
     });
 
     return () => {
-      unsubscribeQuery();
+      unsubscribeMemberQuery();
+      unsubscribeRoomQuery();
     };
   }, [fieldValue]);
 
@@ -76,6 +97,7 @@ export function Room() {
     });
   };
 
+  console.log(roomExists);
   const handleJoinRoom = async () => {
     if (
       enteredRoom.current.value == "" ||
@@ -83,19 +105,24 @@ export function Room() {
     ) {
       alert("Invalid room");
     } else {
-      localStorage.setItem(
-        "joinedCode",
-        JSON.stringify(enteredRoom.current.value)
-      );
-      localStorage.setItem("inRoom", JSON.stringify(true));
-      setIsIn(true);
-      if (docExists == true) {
-        console.log("user not found");
-        await addMember(enteredRoom.current.value);
-        navigate("/chatPage");
+      if (roomExists) {
+        localStorage.setItem(
+          "joinedCode",
+          JSON.stringify(enteredRoom.current.value)
+        );
+        localStorage.setItem("inRoom", JSON.stringify(true));
+        setIsIn(true);
+        if (docExists == true) {
+          console.log("user not found");
+          await addMember(enteredRoom.current.value);
+          navigate("/chatPage");
+        } else {
+          navigate("/chatPage");
+          console.log("user found");
+        }
       } else {
-        navigate("/chatPage");
-        console.log("user found");
+        alert("Room does not exist");
+        return;
       }
     }
   };
@@ -103,11 +130,18 @@ export function Room() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (submitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
     if (
       roomInput.current.value == "" ||
       /^\s*$/.test(roomInput.current.value)
     ) {
       alert("Enter Room name");
+      setIsSubmitting(false);
     } else {
       await addDoc(roomRef, {
         roomCreator: userInfo.displayName,
@@ -120,13 +154,12 @@ export function Room() {
       localStorage.setItem("joinedCode", JSON.stringify(generatedCode));
       setIsIn(true);
       navigate("/chatPage");
+      setIsSubmitting(false);
     }
 
     e.target.reset();
     generateCode();
   };
-
-
 
   if (createRoom) {
     return (
