@@ -1,49 +1,58 @@
 import "../css/room.css";
-import { collection, addDoc, serverTimestamp, query, where, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
+  onSnapshot,
+} from "firebase/firestore";
 import { useState, useRef, useContext, useEffect } from "react";
 import { db } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
-import {CopyToClipboard} from "react-copy-to-clipboard"
-import { appContext } from "../App";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+
+import { UserContext } from "../context/UserContext";
 
 export function Room() {
 
   const [createRoom, setCreateRoom] = useState(true);
   const [generatedCode, setGeneratedCode] = useState("");
   const enteredRoom = useRef();
-  const { userInfo, setIsIn } = useContext(appContext);
+  const { userInfo, setIsIn,isIn } = useContext(UserContext);
   const roomInput = useRef();
   const [docExists, setDocExists] = useState(false);
   const roomRef = collection(db, "rooms");
-  const memberCol = collection(db,"roomMembers");
-  const [fieldValue, setFieldValue] = useState('');
- 
+  const memberCol = collection(db, "roomMembers");
+  const [fieldValue, setFieldValue] = useState("");
   const navigate = useNavigate();
 
- 
-  useEffect(()=>{
 
-    const queryMembers = query(memberCol, where('memberName', '==',  userInfo.displayName), where('roomCode' , '==', enteredRoom.current.value));
- const unsubscribeQuery =  onSnapshot(queryMembers, (snapshot) => {
-    
+  useEffect(() => {
+    const queryMembers = query(
+      memberCol,
+      where("memberName", "==", userInfo.displayName),
+      where("roomCode", "==", enteredRoom.current.value)
+    );
+    const unsubscribeQuery = onSnapshot(queryMembers, (snapshot) => {
       snapshot.forEach((doc) => {
-      console.log({ ...doc.data(), id: doc.id });
+        console.log({ ...doc.data(), id: doc.id });
       });
-     
-      if(snapshot.empty){
-        console.log("empty")
+
+      if (snapshot.empty) {
+        console.log("empty");
         setDocExists(true);
-      }else{
-        console.log("not empty")
+      } else {
+        console.log("not empty");
         setDocExists(false);
       }
     });
-    
+
     return () => {
       unsubscribeQuery();
     };
-  },[fieldValue])
- 
+  }, [fieldValue]);
+
   const generateCode = () => {
     const number = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
     const chars = "abcdefghijklmnopqrstuvwxyz";
@@ -58,62 +67,66 @@ export function Room() {
     setGeneratedCode(code);
   };
 
-  const addMember = async (code) =>{
+  const addMember = async (code) => {
     await addDoc(memberCol, {
       memberName: userInfo.displayName,
       roomCode: code,
-      timeJoined:  serverTimestamp(),
+      timeJoined: serverTimestamp(),
       photoURL: userInfo.photoURL,
-    })
-  }
+    });
+  };
 
   const handleJoinRoom = async () => {
-    if(enteredRoom.current.value == "" ||   /^\s*$/.test(enteredRoom.current.value)){
+    if (
+      enteredRoom.current.value == "" ||
+      /^\s*$/.test(enteredRoom.current.value)
+    ) {
       alert("Invalid room");
-    }else{
-      localStorage.setItem("joinedCode", JSON.stringify(enteredRoom.current.value));
+    } else {
+      localStorage.setItem(
+        "joinedCode",
+        JSON.stringify(enteredRoom.current.value)
+      );
       localStorage.setItem("inRoom", JSON.stringify(true));
-      setIsIn( JSON.parse(localStorage.getItem("inRoom")));
-      if(docExists == true){
+      setIsIn(true);
+      if (docExists == true) {
         console.log("user not found");
         await addMember(enteredRoom.current.value);
         navigate("/chatPage");
-        
-     
-      }else{
+      } else {
         navigate("/chatPage");
         console.log("user found");
       }
-     
     }
-    
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
- 
-    
-        if (roomInput.current.value == "" ||   /^\s*$/.test(roomInput.current.value)) {
-          alert("Enter Room name");
-        } else {
-          await addDoc(roomRef, {
-            roomCreator: userInfo.displayName,
-            roomName: roomInput.current.value,
-            roomCode: generatedCode,
-            createdAt: serverTimestamp(),
-          });
-       
-     
+
+    if (
+      roomInput.current.value == "" ||
+      /^\s*$/.test(roomInput.current.value)
+    ) {
+      alert("Enter Room name");
+    } else {
+      await addDoc(roomRef, {
+        roomCreator: userInfo.displayName,
+        roomName: roomInput.current.value,
+        roomCode: generatedCode,
+        createdAt: serverTimestamp(),
+      });
+
       await addMember(generatedCode);
       localStorage.setItem("joinedCode", JSON.stringify(generatedCode));
-      localStorage.setItem("inRoom", JSON.stringify(true));
-      setIsIn( JSON.parse(localStorage.getItem("inRoom")));
+      setIsIn(true);
       navigate("/chatPage");
     }
 
     e.target.reset();
     generateCode();
   };
+
+
 
   if (createRoom) {
     return (
@@ -138,7 +151,12 @@ export function Room() {
           </ul>
           <ul>or</ul>
           <ul>
-            <input type="text" placeholder="Room code" ref={enteredRoom}  onChange={(e) => setFieldValue(e.target.value)} />
+            <input
+              type="text"
+              placeholder="Room code"
+              ref={enteredRoom}
+              onChange={(e) => setFieldValue(e.target.value)}
+            />
 
             <button onClick={handleJoinRoom}>Enter</button>
           </ul>
@@ -155,25 +173,24 @@ export function Room() {
               alt="fire-logo"
             />
           </ul>
-          
+
           <form onSubmit={handleSubmit}>
             <ul>
               <input type="text" placeholder="Room Name" ref={roomInput} />
             </ul>
-          <span className="roomcode-span">
-          <ul className="code-label">Room Code: {generatedCode} 
-          <CopyToClipboard text={generatedCode}>
-          <img
-              src={new URL("../pictures/copy.png", import.meta.url)}
-              alt="fire-logo"
-            />
-          </CopyToClipboard>
-           </ul>
-          </span>
-            
-            <ul>
-            
+            <span className="roomcode-span">
+              <ul className="code-label">
+                Room Code: {generatedCode}
+                <CopyToClipboard text={generatedCode}>
+                  <img
+                    src={new URL("../pictures/copy.png", import.meta.url)}
+                    alt="fire-logo"
+                  />
+                </CopyToClipboard>
+              </ul>
+            </span>
 
+            <ul>
               <button className="create-button" type="submit">
                 Create
               </button>

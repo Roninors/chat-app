@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import "../css/chat.css";
-import { appContext } from "../App";
 import {
   addDoc,
   collection,
@@ -11,10 +10,13 @@ import {
   serverTimestamp,
   where,
 } from "firebase/firestore";
+
 import { db } from "../firebase-config";
 import { Tooltip } from "react-tooltip";
 import ReactScrollableFeed from "react-scrollable-feed";
 import {CopyToClipboard} from "react-copy-to-clipboard"
+import  { UserContext } from "../context/UserContext";
+
 export function Chat() {
   const inlineStyles = {
     justifyContent: "right",
@@ -31,13 +33,15 @@ export function Chat() {
   const messageCol = collection(db, "messages");
   const roomCol = collection(db, "rooms");
   const memberCol = collection(db,"roomMembers");
-  const { userInfo } = useContext(appContext);
+  const { userInfo,setIsIn } = useContext(UserContext);
   const [inputText, setInputText] = useState("");
   const joinedCode = JSON.parse(localStorage.getItem("joinedCode"));
   const messageRef = useRef();
   const [messages, setMessages] = useState([]);
   const [chosenRoom, setChosenRoom] = useState([]);
-const [roomMember, setRoomMember] = useState([]);
+  const [roomMember, setRoomMember] = useState([]);
+   
+
   useEffect(() => {
     const queryMessages = query(
       messageCol,
@@ -199,7 +203,7 @@ const [roomMember, setRoomMember] = useState([]);
                     data-tooltip-content={joinedCode}>
                       
               {chosenRoom.map((room) => (
-                <h2 key={1}> {room.roomName}  <Tooltip id="roomcode-tooltip" /></h2>
+                <h2 key={Math.random()}> {room.roomName}  <Tooltip id="roomcode-tooltip" /></h2>
                 
               ))}
       
@@ -223,7 +227,7 @@ const [roomMember, setRoomMember] = useState([]);
         <section>
         <div className="member-section">
         {roomMember.map((member) => (
-              <div className="member">
+              <div className="member" key = {Math.random()}>
               <img
                  src={new URL(member.photoURL, import.meta.url)}
                  alt="fire-logo"

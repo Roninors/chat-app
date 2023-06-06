@@ -1,12 +1,14 @@
 import "../css/navBar.css";
 import { useContext } from "react";
-import { appContext } from "../App";
+
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase-config";
 import Cookies from "universal-cookie";
+import { UserContext } from "../context/UserContext";
+
 export function NavBar() {
   const cookies = new Cookies();
-  const {isAuth} = useContext(appContext);
+  const {isAuth} = useContext(UserContext);
   return (
     <nav className="nav-bar">
       <div className="header">
