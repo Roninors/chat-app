@@ -3,7 +3,6 @@ import "../css/chat.css";
 import {
   addDoc,
   collection,
-  limit,
   onSnapshot,
   orderBy,
   query,
@@ -16,6 +15,7 @@ import { Tooltip } from "react-tooltip";
 import ReactScrollableFeed from "react-scrollable-feed";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { UserContext } from "../context/UserContext";
+import { Messages } from "./chat components/Messages";
 
 export function Chat() {
   const inlineStyles = {
@@ -120,13 +120,12 @@ export function Chat() {
       }
     }
   };
-  console.log(roomMember);
+
   return (
     <div className="main-container">
       <div className="chat-container">
         <div className="message-container">
           <ReactScrollableFeed>
-
             <div className="convo-start-label">
               <img
                 src={new URL("../pictures/fire-logo.png", import.meta.url)}
@@ -135,52 +134,13 @@ export function Chat() {
               <h1>Conversation starts here</h1>
             </div>
 
-            {messages.map((message) => (
-
-              <div
-                style={
-                  userInfo.displayName === message.sender
-                    ? inlineStyles
-                    : undefined
-                }
-                className="chat-info"
-                key={message.id}
-              >
-                <img
-                  style={
-                    userInfo.displayName === message.sender
-                      ? inlineImgStyle
-                      : undefined
-                  }
-                  src={new URL(message.photoUrl, import.meta.url)}
-                  alt="fire-logo"
-                />
-
-                <span
-                  style={
-                    userInfo.displayName === message.sender
-                      ? inlineSpanStyles
-                      : undefined
-                  }
-                >
-                  <p>
-                    {userInfo.displayName === message.sender
-                      ? "Me"
-                      : message.sender}
-                  </p>
-                  <div
-                    data-tooltip-id="my-tooltip"
-                    data-tooltip-content={message.timeSent
-                      ?.toDate()
-                      .toLocaleString()}
-                    className="text-container"
-                  >
-                    {message.text}
-                    <Tooltip id="my-tooltip" />
-                  </div>
-                </span>
-              </div>
-            ))}
+            <Messages
+              messages={messages}
+              inlineImgStyle={inlineImgStyle}
+              inlineSpanStyles={inlineSpanStyles}
+              inlineStyles={inlineStyles}
+              userInfo={userInfo}
+            />
           </ReactScrollableFeed>
         </div>
 
