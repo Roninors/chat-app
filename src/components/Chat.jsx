@@ -180,7 +180,7 @@ export function Chat() {
 
             
             {roomMember.map((member) => {
-              if (member.isTyping === true) {
+              if (member.isTyping === true && member.memberName !== userInfo.displayName) {
                 return(<div className="typing-div">
                 <p className="typing-indicator">Someone is typing ...</p>;
                </div>)
