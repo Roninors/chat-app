@@ -30,7 +30,7 @@ export function Room() {
   useEffect(() => {
     const queryMembers = query(
       memberCol,
-      where("memberName", "==", userInfo.email),
+      where("memberEmail", "==", userInfo.email),
       where("roomCode", "==", enteredRoom.current.value)
     );
 
@@ -90,6 +90,7 @@ export function Room() {
   const addMember = async (code) => {
     await addDoc(memberCol, {
       memberName: userInfo.displayName,
+      memberEmail: userInfo.email,
       roomCode: code,
       isTyping: false,
       timeJoined: serverTimestamp(),
