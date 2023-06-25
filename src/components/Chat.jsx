@@ -178,19 +178,20 @@ export function Chat() {
               userInfo={userInfo}
             />
 
-            
             {roomMember.map((member) => {
-              if (member.isTyping === true && member.memberName !== userInfo.displayName) {
-                return(<div className="typing-div">
-                <p className="typing-indicator">Someone is typing ...</p>;
-               </div>)
-
-              }else{
+              if (
+                member.isTyping === true &&
+                member.memberName !== userInfo.displayName
+              ) {
+                return (
+                  <div className="typing-div">
+                    <p className="typing-indicator">Someone is typing ...</p>;
+                  </div>
+                );
+              } else {
                 return "";
               }
             })}
-         
-           
           </ReactScrollableFeed>
         </div>
 

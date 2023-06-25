@@ -2,6 +2,7 @@ import { useState, createContext, useContext } from "react";
 import { NavBar } from "./components/NavBar";
 import { SignIn } from "./components/SignIn";
 import Cookies from "universal-cookie";
+import { Helmet } from "react-helmet";
 import { Room } from "./components/Room";
 import {
   BrowserRouter as Router,
@@ -17,7 +18,13 @@ const {isAuth,isIn} = useContext(UserContext);
 
   return (
     <>
-  
+  <Helmet>
+        <title>Your Website Title</title>
+        <meta name="description" content="Description of your website" />
+        <meta property="og:title" content="Your Website Title" />
+        <meta property="og:description" content="Description of your website" />
+        <meta property="og:image" content="/pictures/website.png" />
+      </Helmet>
         <Router>
           <NavBar />
           <Routes>
