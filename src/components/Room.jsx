@@ -92,6 +92,7 @@ export function Room() {
     await addDoc(memberCol, {
       memberName: userInfo.displayName,
       roomCode: code,
+      isTyping: false,
       timeJoined: serverTimestamp(),
       photoURL: userInfo.photoURL,
     });

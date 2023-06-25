@@ -3,10 +3,12 @@ import "../css/chat.css";
 import {
   addDoc,
   collection,
+  doc,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
   where,
 } from "firebase/firestore";
 
@@ -40,7 +42,7 @@ export function Chat() {
   const [messages, setMessages] = useState([]);
   const [chosenRoom, setChosenRoom] = useState([]);
   const [roomMember, setRoomMember] = useState([]);
-
+  const [chosenMember, setChosenMember] = useState([]);
   useEffect(() => {
     const queryMessages = query(
       messageCol,
@@ -49,12 +51,27 @@ export function Chat() {
     );
 
     const queryRooms = query(roomCol, where("roomCode", "==", joinedCode));
+
     const queryRoomMembers = query(
       memberCol,
       where("roomCode", "==", joinedCode),
       orderBy("timeJoined")
     );
 
+    const queryChosenMember = query(
+      memberCol,
+      where("memberName", "==", userInfo.displayName),where("roomCode", "==", joinedCode)
+    );
+
+    const unsubscribeChosenMember =  onSnapshot(queryChosenMember, (snapshot) => {
+      let member = [];
+      snapshot.forEach((doc) => {
+        member.push({ ...doc.data(), id: doc.id });
+      });
+      console.log("get chosen member");
+      setChosenMember(member);
+    });
+      
     const unsubscribeMessages = onSnapshot(queryMessages, (snapshot) => {
       let messages = [];
       snapshot.forEach((doc) => {
@@ -87,8 +104,22 @@ export function Chat() {
       unsubscribeMembers();
       unsubscribeMessages();
       unsubscribeRooms();
+      unsubscribeChosenMember();
     };
   }, []);
+  
+  const typingUpdate = async ()=>{
+    const documentRef = doc(db, "roomMembers", chosenMember[0].id);
+
+    try {
+      await updateDoc(documentRef, {
+        isTyping : true
+      });
+      console.log("Document successfully updated!");
+    } catch (error) {
+      console.error("Error updating document: ", error);
+    }
+  }
 
   const handleEnter = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -121,6 +152,15 @@ export function Chat() {
     }
   };
 
+  //to be continued
+console.log(chosenMember)
+ 
+  if (inputText !== "") {
+    typingUpdate();
+  } else {
+    console.log("not typing");
+  }
+  //
   return (
     <div className="main-container">
       <div className="chat-container">
