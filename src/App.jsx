@@ -23,7 +23,7 @@ const {isAuth,isIn} = useContext(UserContext);
         <meta name="description" content="Description of your website" />
         <meta property="og:title" content="Your Website Title" />
         <meta property="og:description" content="Description of your website" />
-        <meta property="og:image" content="/pictures/website.png" />
+        <meta property="og:image" content="./pictures/website.png" />
       </Helmet>
         <Router>
           <NavBar />
