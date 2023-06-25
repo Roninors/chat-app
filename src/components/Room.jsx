@@ -11,7 +11,6 @@ import { useState, useRef, useContext, useEffect } from "react";
 import { db } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-
 import { UserContext } from "../context/UserContext";
 
 export function Room() {

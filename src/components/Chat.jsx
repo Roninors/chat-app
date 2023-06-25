@@ -43,6 +43,7 @@ export function Chat() {
   const [chosenRoom, setChosenRoom] = useState([]);
   const [roomMember, setRoomMember] = useState([]);
   const [chosenMember, setChosenMember] = useState([]);
+  const [isTyping, setIsTyping] = useState(false);
   useEffect(() => {
     const queryMessages = query(
       messageCol,
@@ -113,10 +114,10 @@ export function Chat() {
   }, []);
 
   const typingUpdate = async (isTyping) => {
-    const documentRef = doc(db, "roomMembers", chosenMember[0].id);
+    const memberRef = doc(db, "roomMembers", chosenMember[0].id);
 
     try {
-      await updateDoc(documentRef, {
+      await updateDoc(memberRef, {
         isTyping,
       });
       console.log("Document successfully updated!");
@@ -156,9 +157,6 @@ export function Chat() {
     }
   };
 
-
-  console.log(roomMember);
-
   return (
     <div className="main-container">
       <div className="chat-container">
@@ -179,6 +177,20 @@ export function Chat() {
               inlineStyles={inlineStyles}
               userInfo={userInfo}
             />
+
+            
+            {roomMember.map((member) => {
+              if (member.isTyping === true) {
+                return(<div className="typing-div">
+                <p className="typing-indicator">Someone is typing ...</p>;
+               </div>)
+
+              }else{
+                return "";
+              }
+            })}
+         
+           
           </ReactScrollableFeed>
         </div>
 
