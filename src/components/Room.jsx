@@ -31,7 +31,7 @@ export function Room() {
   useEffect(() => {
     const queryMembers = query(
       memberCol,
-      where("memberName", "==", userInfo.displayName),
+      where("memberName", "==", userInfo.email),
       where("roomCode", "==", enteredRoom.current.value)
     );
 
