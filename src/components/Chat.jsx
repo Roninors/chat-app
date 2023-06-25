@@ -60,18 +60,22 @@ export function Chat() {
 
     const queryChosenMember = query(
       memberCol,
-      where("memberName", "==", userInfo.displayName),where("roomCode", "==", joinedCode)
+      where("memberName", "==", userInfo.displayName),
+      where("roomCode", "==", joinedCode)
     );
 
-    const unsubscribeChosenMember =  onSnapshot(queryChosenMember, (snapshot) => {
-      let member = [];
-      snapshot.forEach((doc) => {
-        member.push({ ...doc.data(), id: doc.id });
-      });
-      console.log("get chosen member");
-      setChosenMember(member);
-    });
-      
+    const unsubscribeChosenMember = onSnapshot(
+      queryChosenMember,
+      (snapshot) => {
+        let member = [];
+        snapshot.forEach((doc) => {
+          member.push({ ...doc.data(), id: doc.id });
+        });
+        console.log("get chosen member");
+        setChosenMember(member);
+      }
+    );
+
     const unsubscribeMessages = onSnapshot(queryMessages, (snapshot) => {
       let messages = [];
       snapshot.forEach((doc) => {
@@ -107,19 +111,19 @@ export function Chat() {
       unsubscribeChosenMember();
     };
   }, []);
-  
-  const typingUpdate = async ()=>{
+
+  const typingUpdate = async (isTyping) => {
     const documentRef = doc(db, "roomMembers", chosenMember[0].id);
 
     try {
       await updateDoc(documentRef, {
-        isTyping : true
+        isTyping,
       });
       console.log("Document successfully updated!");
     } catch (error) {
       console.error("Error updating document: ", error);
     }
-  }
+  };
 
   const handleEnter = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -152,15 +156,9 @@ export function Chat() {
     }
   };
 
-  //to be continued
-console.log(chosenMember)
- 
-  if (inputText !== "") {
-    typingUpdate();
-  } else {
-    console.log("not typing");
-  }
-  //
+
+  console.log(roomMember);
+
   return (
     <div className="main-container">
       <div className="chat-container">
@@ -189,7 +187,11 @@ console.log(chosenMember)
             name="chat"
             rows={1}
             value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
+            onChange={(e) => {
+              setInputText(e.target.value);
+            }}
+            onFocus={() => typingUpdate(true)}
+            onBlur={() => typingUpdate(false)}
             onKeyDown={handleEnter}
             ref={messageRef}
           ></textarea>

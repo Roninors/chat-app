@@ -32,7 +32,6 @@ export function Room() {
     const queryMembers = query(
       memberCol,
       where("memberName", "==", userInfo.displayName),
-      where("roomCode", "==", enteredRoom.current.value)
     );
 
     const queryRoom = query(
